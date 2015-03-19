@@ -1,13 +1,17 @@
+require 'User'
+require 'pry'
 class UsersController < ApplicationController
 
   def index
 	directory = 'users.json'
 	@users_per_page = 10
 	@data = File.exist?(directory) ? File.read(directory) : '[]'
-	@data = JSON.parse(@data)
+	@data = JSON.parse(@data).map {|dictionary|  User.new(dictionary)}
 	page = get_page((params[:page] || 0).to_i)
-	first_degree = user_follows(params[:username]).map{|username| find_user(username)}.select{|user| user && user['upload_track_count'] > 0}
-	second_degree = user_follows_second_degree(params[:username]).map{|username| find_user(username)}.select{|user| user && user['upload_track_count'] > 0}
+	username_param = params[:username]
+
+	first_degree = user_follows(username_param).map{|following_username| find_user(following_username)}.select{|user| user && user.isArtist}
+	second_degree = user_follows_second_degree(username_param).map{|following_username| find_user(following_username)}.select{|user| user && user.isArtist}
 
 	render :json => [paginate(first_degree, page), paginate(second_degree, page)]
   end
@@ -21,13 +25,13 @@ class UsersController < ApplicationController
   end
 
   def find_user(username)
-  	data = @data.select{|user| user['username'] == username}
+  	data = @data.select{|user| user.username == username}
   	data[0] ? data[0] : nil
   end
 
   def user_follows(username)
 	user = find_user(username)
-	user ? user['following'] : []
+	user ? user.following : []
   end
 
   def user_follows_second_degree(username)

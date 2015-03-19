@@ -26,8 +26,7 @@ class UserCreator
   end
 
   def create_user(display_name, username, icon_url, upload_track_count)
-    is_following = Random.rand(5) == 0 ? false : true
-    following = is_following ? Random.rand(@number_of_users).times.map{ "user_" + Random.rand(@number_of_users).to_s } : []
+    following = Random.rand(@number_of_users).times.map{ "user_" + Random.rand(@number_of_users).to_s }
 
     {
       'display_name' => display_name,

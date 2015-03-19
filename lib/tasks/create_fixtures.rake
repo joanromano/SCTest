@@ -5,7 +5,7 @@ task :create_fixtures => :environment do
 	require "user_creator"
 
 	directory = 'users.json'
-	creator = UserCreator.new(20)
+	creator = UserCreator.new(200)
 	users = creator.create_users
 
 	File.open(directory, 'w') do |f|
