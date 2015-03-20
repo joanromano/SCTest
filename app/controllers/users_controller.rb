@@ -5,8 +5,8 @@ class UsersController < ApplicationController
   def index
 	directory = 'users.json'
 	@users_per_page = 10
-	@data = File.exist?(directory) ? File.read(directory) : '[]'
-	@data = JSON.parse(@data).map {|dictionary|  User.new(dictionary)}
+	@artists = File.exist?(directory) ? File.read(directory) : '[]'
+	@artists = JSON.parse(@artists).map {|dictionary|  User.new(dictionary)}
 	page = get_page((params[:page] || 0).to_i)
 	username_param = params[:username]
 
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   end
 
   def find_user(username)
-  	data = @data.select{|user| user.username == username}
+  	data = @artists.select{|user| user.username == username}
   	data[0] ? data[0] : nil
   end
 
