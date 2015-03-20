@@ -18,4 +18,13 @@ class User
 		@upload_track_count > 0
 	end
 
+	def outputRepresentation
+		{
+		  'display_name' => @display_name,
+		  'username' => @username,
+		  'icon_url' => @icon_url,
+		  'upload_track_count' => @upload_track_count,
+		}
+	end
+
 end

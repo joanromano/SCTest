@@ -10,11 +10,14 @@ class UsersController < ApplicationController
     page = get_page((params[:page] || 0).to_i)
     username_param = params[:username]
 
-    first_degree = user_follows(username_param).map{|u| find_user(u)}.select{|user| user.isArtist}
-    second_degree = user_follows_second_degree(username_param).map{|u| find_user(u)}.select{|user| user.isArtist}
+    first_degree = user_follows(username_param).map{|u| find_user(u)}.select{|u| u.isArtist}
+    second_degree = user_follows_second_degree(username_param).map{|u| find_user(u)}.select{|u| u.isArtist}
     second_degree = second_degree - first_degree
 
-    render :json => [paginate(first_degree, page), paginate(second_degree, page)]
+    first_degree = first_degree.map{|u| u.outputRepresentation}
+    second_degree = second_degree.map{|u| u.outputRepresentation}
+
+    render :json => {:first_degree => paginate(first_degree, page), :second_degree => paginate(second_degree, page)}
   end
 
   def paginate(users, page)
