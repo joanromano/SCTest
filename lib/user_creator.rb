@@ -26,8 +26,9 @@ class UserCreator
   end
 
   def create_user(display_name, username, icon_url, upload_track_count)
-    following = Random.rand(@number_of_users).times.map{ "user_" + Random.rand(@number_of_users).to_s }
-
+    following_number = Random.rand(1...@number_of_users-1)
+    following_usernames = Array(1..@number_of_users).sample(following_number).map{|i| "user_" + i.to_s }
+    following = following_usernames.select{|u| u != username}
     {
       'display_name' => display_name,
       'username' => username,

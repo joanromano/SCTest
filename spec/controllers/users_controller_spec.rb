@@ -3,8 +3,6 @@ require 'pry'
 
 RSpec.describe UsersController, :type => :controller do
 
-  let(:username) { FactoryGirl.create :user }
-
   describe "GET #index" do
     it "responds successfully with an HTTP 200 status code" do
       get :index
