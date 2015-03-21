@@ -3,13 +3,15 @@ require 'pry'
 class ArtistsController < ApplicationController
 
   def index
-    directory = 'users.json'
+    directory = Rails.root.join('tmp/users.json').to_s
     @users_per_page = 10
+  puts directory
     @artists = File.exist?(directory) ? File.read(directory) : '[]'
+  puts @artists
     @artists = JSON.parse(@artists).map {|dictionary|  User.new(dictionary)}
     page = get_page((params[:page] || 0).to_i)
     username_param = params[:username]
-
+  puts @artists
     first_degree = user_follows(username_param).map{|u| find_user(u)}.select{|u| u.isArtist}
     second_degree = user_follows_second_degree(username_param).map{|u| find_user(u)}.select{|u| u.isArtist}
     second_degree = second_degree - first_degree

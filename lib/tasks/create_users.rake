@@ -2,7 +2,7 @@ desc "Create users task"
 require "user_creator"
 
 task :create_users => :environment do
-	directory = 'users.json'
+	directory = Rails.root.join('tmp/users.json').to_s
 
   STDOUT.puts "Number of users to create? (MIN: 20 / MAX: 500)"
   input = STDIN.gets.to_i
