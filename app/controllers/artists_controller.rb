@@ -1,6 +1,6 @@
 require 'user'
 require 'pry'
-class UsersController < ApplicationController
+class ArtistsController < ApplicationController
 
   def index
     directory = 'users.json'

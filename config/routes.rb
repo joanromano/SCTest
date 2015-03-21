@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  get '/users', to: 'users#index'
+  get '/artists', to: 'artists#index'
 end
