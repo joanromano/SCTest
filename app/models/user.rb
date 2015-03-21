@@ -8,6 +8,12 @@ class User < ActiveHash::Base
 	field :upload_track_count
 	field :following
 
+	def User.all_users
+		directory = Rails.root.join('tmp/users.json').to_s
+		artists = File.exist?(directory) ? File.read(directory) : '[]'
+		JSON.parse(artists).map {|dictionary|  User.create_from_dic(dictionary)}
+	end
+
 	def User.create_from_dic(user_dictionary)
 		create :username => user_dictionary['username'], 
 		       :display_name => user_dictionary['username'], 
