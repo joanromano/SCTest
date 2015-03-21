@@ -7,9 +7,8 @@ class ArtistsController < ApplicationController
     @artists = User.all_users
     page = get_page((params[:page] || 0).to_i)
     username_param = params[:username]
-
-    first_degree = user_follows(username_param).map{|u| User.find_by_username u}.select{|u| u.is_artist}
-    second_degree = user_follows_second_degree(username_param).map{|u| User.find_by_username u}.select{|u| u.is_artist}
+    first_degree = user_follows(username_param).map{|u| User.find_by_username u}.select{|u| u && u.is_artist}
+    second_degree = user_follows_second_degree(username_param).map{|u| User.find_by_username u}.select{|u| u && u.is_artist}
     second_degree = second_degree - first_degree
 
     first_degree = first_degree.map{|u| u.output_representation}

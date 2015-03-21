@@ -1,4 +1,5 @@
 require 'active_hash'
+require 'pry'
 
 class User < ActiveHash::Base
 
