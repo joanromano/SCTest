@@ -14,11 +14,11 @@ class User
 		@following = user_dictionary['following']
 	end
 
-	def isArtist
+	def is_artist
 		@upload_track_count > 0
 	end
 
-	def outputRepresentation
+	def output_representation
 		{
 		  'display_name' => @display_name,
 		  'username' => @username,
