@@ -41,6 +41,7 @@ group :development, :test do
   gem 'spring'
 end
 
+gem 'active_hash'
 gem 'pry'
 gem 'pry-nav'
 gem 'rails_12factor', group: :production

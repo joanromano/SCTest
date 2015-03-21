@@ -1,29 +1,31 @@
-class User
+require 'active_hash'
 
-	attr_reader :username
-	attr_reader :display_name
-	attr_reader :icon_url
-	attr_reader :upload_track_count
-	attr_reader :following
+class User < ActiveHash::Base
 
-	def initialize(user_dictionary)
-		@username = user_dictionary['username']
-		@display_name = user_dictionary['display_name']
-		@icon_url = user_dictionary['icon_url']
-		@upload_track_count = user_dictionary['upload_track_count']
-		@following = user_dictionary['following']
+	field :username
+	field :display_name
+	field :icon_url
+	field :upload_track_count
+	field :following
+
+	def User.create_from_dic(user_dictionary)
+		create :username => user_dictionary['username'], 
+		       :display_name => user_dictionary['username'], 
+		       :icon_url => user_dictionary['icon_url'], 
+		       :upload_track_count => user_dictionary['upload_track_count'], 
+		       :following => user_dictionary['following']
 	end
 
 	def is_artist
-		@upload_track_count > 0
+		self.upload_track_count > 0
 	end
 
 	def output_representation
 		{
-		  'display_name' => @display_name,
-		  'username' => @username,
-		  'icon_url' => @icon_url,
-		  'upload_track_count' => @upload_track_count,
+		  'display_name' => self.display_name,
+		  'username' => self.username,
+		  'icon_url' => self.icon_url,
+		  'upload_track_count' => self.upload_track_count,
 		}
 	end
 

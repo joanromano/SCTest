@@ -6,12 +6,13 @@ class ArtistsController < ApplicationController
     directory = Rails.root.join('tmp/users.json').to_s
     @users_per_page = 10
     @artists = File.exist?(directory) ? File.read(directory) : '[]'
-    @artists = JSON.parse(@artists).map {|dictionary|  User.new(dictionary)}
+    @artists = JSON.parse(@artists).map {|dictionary|  User.create_from_dic(dictionary)}
     page = get_page((params[:page] || 0).to_i)
     username_param = params[:username]
 
-    first_degree = user_follows(username_param).map{|u| find_user(u)}.select{|u| u.is_artist}
-    second_degree = user_follows_second_degree(username_param).map{|u| find_user(u)}.select{|u| u.is_artist}
+    first_degree = user_follows(username_param).map{|u| User.find_by_username u}.select{|u| u.is_artist}
+    second_degree = user_follows_second_degree(username_param).map{|u| User.find_by_username u}.select{|u| u.is_artist}
+    # binding.pry
     second_degree = second_degree - first_degree
 
     first_degree = first_degree.map{|u| u.output_representation}
@@ -28,13 +29,8 @@ class ArtistsController < ApplicationController
     page < 2 ? 0 : page - 1
   end
 
-  def find_user(username)
-    data = @artists.select{|user| user.username == username}
-    data[0] ? data[0] : nil
-  end
-
   def user_follows(username)
-    user = find_user(username)
+    user = User.find_by_username username
     user ? user.following : []
   end
 
