@@ -1,7 +1,7 @@
-require 'active_hash'
-require 'pry'
-
-class User < ActiveHash::Base
+class User < ActiveJSON::Base
+  include ActiveModel::Serializers::JSON
+  set_root_path "tmp"
+  set_filename "users"
 
 	field :username
 	field :display_name
@@ -9,31 +9,25 @@ class User < ActiveHash::Base
 	field :upload_track_count
 	field :following
 
-	def User.all_users
-		directory = Rails.root.join('tmp/users.json').to_s
-		artists = File.exist?(directory) ? File.read(directory) : '[]'
-		JSON.parse(artists).map {|dictionary|  User.create_from_dic(dictionary)}
-	end
-
-	def User.create_from_dic(user_dictionary)
-		create :username => user_dictionary['username'], 
-		       :display_name => user_dictionary['username'], 
-		       :icon_url => user_dictionary['icon_url'], 
-		       :upload_track_count => user_dictionary['upload_track_count'], 
-		       :following => user_dictionary['following']
-	end
-
 	def is_artist
 		self.upload_track_count > 0
 	end
 
-	def output_representation
+	def as_json(*args)
 		{
 		  'display_name' => self.display_name,
 		  'username' => self.username,
 		  'icon_url' => self.icon_url,
 		  'upload_track_count' => self.upload_track_count,
 		}
+	end
+
+	def following_users
+		following.map{|n| User.find_by_username(n)}
+	end
+
+	def following
+		attributes[:following] || []
 	end
 
 end

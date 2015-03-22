@@ -1,18 +1,18 @@
-require 'user'
-require 'pry'
 class ArtistsController < ApplicationController
 
   def index
     @users_per_page = 10
-    @artists = User.all_users
+    @artists = User.all
     page = get_page((params[:page] || 0).to_i)
-    username_param = params[:username]
-    first_degree = user_follows(username_param).map{|u| User.find_by_username u}.select{|u| u && u.is_artist}
-    second_degree = user_follows_second_degree(username_param).map{|u| User.find_by_username u}.select{|u| u && u.is_artist}
-    second_degree = second_degree - first_degree
+    user = User.find_by_username(params[:username])
+    if user
+      first_degree = user.following_users.select(&:is_artist)
+      second_degree = user.following_users.map(&:following_users).flatten.uniq.reject{|u| u.id == user.id}.select(&:is_artist) - first_degree
+    else
+      first_degree = []
+      second_degree = []
+    end
 
-    first_degree = first_degree.map{|u| u.output_representation}
-    second_degree = second_degree.map{|u| u.output_representation}
 
     render :json => {:first_degree => paginate(first_degree, page), :second_degree => paginate(second_degree, page)}
   end
@@ -23,18 +23,6 @@ class ArtistsController < ApplicationController
 
   def get_page(page)
     page < 2 ? 0 : page - 1
-  end
-
-  def user_follows(username)
-    user = User.find_by_username username
-    user ? user.following : []
-  end
-
-  def user_follows_second_degree(username)
-    second_degree = []
-    following = user_follows(username)
-    second_degree = following.map{|following_username| user_follows(following_username)}.flatten
-    second_degree.select{|following_username| following_username != username}.uniq
   end
 
 end
