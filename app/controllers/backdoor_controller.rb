@@ -14,6 +14,8 @@ class BackdoorController < ApplicationController
 			f.puts users.to_json
 		end
 
+		User.reload(true)
+
 		head :no_content
   end
 
